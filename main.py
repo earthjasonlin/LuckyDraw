@@ -11,7 +11,7 @@ REGISTRY_PATH = r"Software\StudentIDDraw"
 DEFAULT_ALLOW_REPEAT = False
 DEFAULT_MIN_ID = 1
 DEFAULT_MAX_ID = 45
-PASSWORD = "admin123"
+PASSWORD = "Admin@123"
 
 selected_ids = []
 
@@ -155,10 +155,6 @@ def open_settings():
     settings_window.grid_columnconfigure(1, weight=1)
     settings_window.grid_rowconfigure(4, weight=1)
 
-    tk.Label(settings_window, text="历史记录:", font=("宋体", 12)).grid(
-        row=0, column=0, padx=5, pady=5, sticky="w"
-    )
-
     load_selected_ids()
 
     history_frame = tk.Frame(settings_window)
@@ -232,26 +228,26 @@ def open_settings():
         selected_ids = []
         update_history_list()
 
-    tk.Button(settings_window, text="新增记录", font=("宋体", 12), command=add_id).grid(
+    tk.Button(settings_window, text="新增记录", font=("宋体", 10), command=add_id).grid(
         row=2, column=0, padx=5, pady=5, sticky="ew"
     )
-    tk.Button(settings_window, text="删除记录", font=("宋体", 12), command=delete_id).grid(
+    tk.Button(settings_window, text="删除记录", font=("宋体", 10), command=delete_id).grid(
         row=2, column=1, padx=5, pady=5, sticky="ew"
     )
-    tk.Button(settings_window, text="修改记录", font=("宋体", 12), command=edit_id).grid(
+    tk.Button(settings_window, text="修改记录", font=("宋体", 10), command=edit_id).grid(
         row=3, column=0, padx=5, pady=5, sticky="ew"
     )
     tk.Button(
-        settings_window, text="清空记录", font=("宋体", 12), command=clear_all_ids
+        settings_window, text="清空记录", font=("宋体", 10), command=clear_all_ids
     ).grid(row=3, column=1, padx=5, pady=5, sticky="ew")
 
     allow_repeat_var = tk.BooleanVar(value=allow_repeat)
     tk.Checkbutton(
-        settings_window, text="允许重复抽号", font=("宋体", 12), variable=allow_repeat_var
+        settings_window, text="允许重复抽号", font=("宋体", 10), variable=allow_repeat_var
     ).grid(row=5, column=0, padx=5, pady=5, sticky="w")
 
-    tk.Label(settings_window, text="学号范围:", font=("宋体", 12)).grid(
-        row=6, column=0, padx=5, pady=5, sticky="w"
+    tk.Label(settings_window, text="学号范围:", font=("宋体", 10)).grid(
+        row=6, column=0, padx=5, pady=5, sticky="e"
     )
     min_id_var = tk.StringVar(value=min_id)
     max_id_var = tk.StringVar(value=max_id)
@@ -274,7 +270,7 @@ def open_settings():
         else:
             messagebox.showerror("错误", "密码错误")
 
-    tk.Button(settings_window, text="保存", font=("宋体", 12), command=save_changes).grid(
+    tk.Button(settings_window, text="保存", font=("宋体", 10), command=save_changes).grid(
         row=8, column=0, columnspan=2, padx=5, pady=20, sticky="ew"
     )
 
