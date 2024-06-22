@@ -324,7 +324,7 @@ label = tk.Label(root, text="", font=("宋体", 50))
 label.pack(pady=20, padx=20)
 
 # 创建抽取学号按钮
-button = tk.Button(root, text="抽取学号", font=("宋体", 12), command=draw_student_id)
+button = tk.Button(root, text="开始", font=("宋体", 12), command=draw_student_id)
 button.pack(pady=10)
 
 # 创建设置按钮
