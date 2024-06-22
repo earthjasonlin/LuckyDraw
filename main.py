@@ -14,7 +14,7 @@ REGISTRY_PATH = r"Software\StudentIDDraw"
 DEFAULT_ALLOW_REPEAT = False
 DEFAULT_MIN_ID = 1
 DEFAULT_MAX_ID = 45
-PASSWORD = "Admin@123"
+PASSWORD = "admin000"
 
 selected_ids = []
 temp_selected_ids = []
@@ -340,7 +340,7 @@ settings_button.pack(pady=10)
 # 创建多行标签，用于显示信息，内容居中显示
 info_label = tk.Label(
     root,
-    text="LuckyDraw v1.1 2024/06/22\nCopyright 2024 earthjasonlin\n保留所有权利。\n本程序仅作为交流学习使用",
+    text="LuckyDraw v1.2 2024/06/22\nCopyright 2024 earthjasonlin\n保留所有权利。\n本程序仅作为交流学习使用",
     font=("宋体", 10),
     justify="center",
     anchor="center",
