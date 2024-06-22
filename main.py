@@ -185,7 +185,7 @@ def open_settings():
     update_history_list()
 
     def add_id():
-        new_id = simpledialog.askstring("新增学号", "请输入新的学号:")
+        new_id = simpledialog.askstring("新增学号", "请输入新的学号:", parent=settings_window)
         if new_id:
             if new_id.isdigit():
                 new_id = int(new_id)
@@ -197,6 +197,7 @@ def open_settings():
                     messagebox.showerror("错误", f"学号必须在 {min_id} 和 {max_id} 之间")
             else:
                 messagebox.showerror("错误", "请输入有效的学号")
+            settings_window.focus_force()
 
     def delete_id():
         selected = history_list.curselection()
@@ -210,6 +211,7 @@ def open_settings():
                 history_list.select_set(index - 1)
         else:
             messagebox.showerror("错误", "请选择一个学号进行删除")
+        settings_window.focus_force()
 
     def edit_id():
         selected = history_list.curselection()
@@ -217,7 +219,7 @@ def open_settings():
             index = selected[0]
             current_id, _ = temp_selected_ids[index]
             new_id = simpledialog.askstring(
-                "修改学号", "请输入新的学号:", initialvalue=str(current_id)
+                "修改学号", "请输入新的学号:", initialvalue=str(current_id), parent=settings_window
             )
             if new_id:
                 if new_id.isdigit():
@@ -233,6 +235,7 @@ def open_settings():
                     messagebox.showerror("错误", "请输入有效的学号")
         else:
             messagebox.showerror("错误", "请选择一个学号进行修改")
+        settings_window.focus_force()
 
     def clear_all_ids():
         global temp_selected_ids
