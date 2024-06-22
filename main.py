@@ -334,7 +334,7 @@ settings_button.pack(pady=10)
 # 创建多行标签，用于显示信息，内容居中显示
 info_label = tk.Label(
     root,
-    text="v1.0 2024/06/07\nCopyright 2024 earthjasonlin\n保留所有权利。\n本程序仅作为交流学习使用",
+    text="LuckyDraw v1.1 2024/06/22\nCopyright 2024 earthjasonlin\n保留所有权利。\n本程序仅作为交流学习使用",
     font=("宋体", 10),
     justify="center",
     anchor="center",
