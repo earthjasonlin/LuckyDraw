@@ -276,7 +276,7 @@ def open_settings():
     )
 
     def save_changes():
-        entered_password = simpledialog.askstring("密码", "请输入密码:", show="*")
+        entered_password = simpledialog.askstring("密码", "请输入密码:", parent=settings_window, show="*")
         if entered_password == PASSWORD:
             save_settings(
                 allow_repeat_var.get(), int(min_id_var.get()), int(max_id_var.get())
