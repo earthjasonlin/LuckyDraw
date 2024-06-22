@@ -15,6 +15,8 @@ DEFAULT_MAX_ID = 45
 PASSWORD = "Admin@123"
 
 selected_ids = []
+is_running = False
+job = None
 
 
 # 注册表工具函数
@@ -111,7 +113,6 @@ def generate_random_id(selected_ids, allow_repeat, min_id, max_id):
     else:
         return random.randint(min_id, max_id)
 
-
 # 更新历史记录列表
 def update_history_list():
     global history_list
@@ -120,22 +121,35 @@ def update_history_list():
         for id, timestamp in selected_ids:
             history_list.insert(tk.END, f"{id} ({timestamp})")
 
+# 每隔 5 毫秒更新一次显示的随机学号
+def update_number(allow_repeat, min_id, max_id):
+    global job
+    if is_running:
+        random_id = generate_random_id(selected_ids, allow_repeat, min_id, max_id)
+        label.config(text=str(random_id))
+        job = root.after(5, update_number, allow_repeat, min_id, max_id)
 
 # 抽取学号按钮点击事件处理函数
 def draw_student_id():
-    global selected_ids
-    load_selected_ids()
+    global is_running, job, selected_ids
     allow_repeat, min_id, max_id = load_settings()
-    id = generate_random_id(selected_ids, allow_repeat, min_id, max_id)
-    if id is not None:
+
+    if is_running:
+        # 停止跳动，保存最终学号
+        root.after_cancel(job)
+        id = label.cget("text")
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        label.config(text=str(id), font=("宋体", 50))
         selected_ids.append((str(id), timestamp))
         save_selected_ids()
         if settings_window:
             update_history_list()
+        button.config(text="开始")
+        is_running = False
     else:
-        label.config(text="已抽完所有学号", font=("宋体", 30))
+        # 开始跳动
+        is_running = True
+        button.config(text="停止")
+        update_number(allow_repeat, min_id, max_id)
 
 
 # 设置按钮点击事件处理函数
