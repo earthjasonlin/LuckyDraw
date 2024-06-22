@@ -4,6 +4,8 @@ import random
 import winreg
 from datetime import datetime
 import os
+import pkg_resources
+import base64
 
 # 注册表路径
 REGISTRY_PATH = r"Software\StudentIDDraw"
@@ -305,18 +307,23 @@ def close_settings_window():
     settings_window.destroy()
     settings_window = None
 
+def get_icon_data():
+    icon_path = pkg_resources.resource_filename(__name__, 'icon.png')
+    with open(icon_path, 'rb') as icon_file:
+        return base64.b64encode(icon_file.read())
 
 # 初始化全局变量
 selected_ids = load_selected_ids()
 settings_window = None
 history_list = None
 
+icon_data = get_icon_data()
+
 # 创建主窗口
 root = tk.Tk()
 root.title("随机抽号机")
 root.attributes("-topmost", 1)
-icon_path = os.path.join("icon.png")
-icon_image = tk.PhotoImage(file=icon_path)
+icon_image = tk.PhotoImage(data=icon_data)
 root.iconphoto(True, icon_image)
 
 # 创建标签，用于显示抽取的学号
