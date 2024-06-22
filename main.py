@@ -3,6 +3,7 @@ from tkinter import simpledialog, messagebox
 import random
 import winreg
 from datetime import datetime
+import os
 
 # 注册表路径
 REGISTRY_PATH = r"Software\StudentIDDraw"
@@ -299,7 +300,10 @@ history_list = None
 # 创建主窗口
 root = tk.Tk()
 root.title("随机抽号机")
-root.attributes("-topmost", 1)  # 置顶显示
+root.attributes("-topmost", 1)
+icon_path = os.path.join("icon.png")
+icon_image = tk.PhotoImage(file=icon_path)
+root.iconphoto(True, icon_image)
 
 # 创建标签，用于显示抽取的学号
 label = tk.Label(root, text="", font=("宋体", 50))
