@@ -286,6 +286,7 @@ def open_settings():
             close_settings_window()
         else:
             messagebox.showerror("错误", "密码错误")
+            settings_window.focus_force()
 
     tk.Button(settings_window, text="保存", font=("宋体", 10), command=save_changes).grid(
         row=8, column=0, columnspan=2, padx=5, pady=20, sticky="ew"
