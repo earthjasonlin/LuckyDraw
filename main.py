@@ -17,9 +17,9 @@ DEFAULT_MAX_ID = 45
 PASSWORD = "Admin@123"
 
 selected_ids = []
+temp_selected_ids = []
 is_running = False
 job = None
-
 
 # 注册表工具函数
 def set_registry_value(value_name, value, value_type=winreg.REG_SZ):
@@ -28,7 +28,6 @@ def set_registry_value(value_name, value, value_type=winreg.REG_SZ):
             winreg.SetValueEx(reg_key, value_name, 0, value_type, value)
     except WindowsError as e:
         print(f"Error setting registry value: {e}")
-
 
 def get_registry_value(value_name, default_value):
     try:
@@ -40,7 +39,6 @@ def get_registry_value(value_name, default_value):
     except WindowsError:
         return default_value
 
-
 def delete_registry_value(value_name):
     try:
         with winreg.OpenKey(
@@ -50,10 +48,9 @@ def delete_registry_value(value_name):
     except WindowsError as e:
         print(f"Error deleting registry value: {e}")
 
-
 # 加载已抽取的学号
 def load_selected_ids():
-    global selected_ids
+    global selected_ids, temp_selected_ids
     selected_ids_str = get_registry_value("SelectedIDs", "")
     if selected_ids_str:
         selected_ids = []
@@ -71,8 +68,8 @@ def load_selected_ids():
                 selected_ids = []
     else:
         selected_ids = []
+    temp_selected_ids = list(selected_ids)
     return selected_ids
-
 
 # 保存已抽取的学号
 def save_selected_ids():
@@ -85,7 +82,6 @@ def save_selected_ids():
     )
     set_registry_value("SelectedIDs", selected_ids_str)
 
-
 # 加载设置
 def load_settings():
     allow_repeat = (
@@ -95,13 +91,11 @@ def load_settings():
     max_id = int(get_registry_value("MaxID", str(DEFAULT_MAX_ID)))
     return allow_repeat, min_id, max_id
 
-
 # 保存设置
 def save_settings(allow_repeat, min_id, max_id):
     set_registry_value("AllowRepeat", str(allow_repeat))
     set_registry_value("MinID", str(min_id))
     set_registry_value("MaxID", str(max_id))
-
 
 # 生成随机的学号
 def generate_random_id(selected_ids, allow_repeat, min_id, max_id):
@@ -120,20 +114,20 @@ def update_history_list():
     global history_list
     if history_list:
         history_list.delete(0, tk.END)
-        for id, timestamp in selected_ids:
+        for id, timestamp in temp_selected_ids:
             history_list.insert(tk.END, f"{id} ({timestamp})")
 
 # 每隔 5 毫秒更新一次显示的随机学号
 def update_number(allow_repeat, min_id, max_id):
     global job
     if is_running:
-        random_id = generate_random_id(selected_ids, allow_repeat, min_id, max_id)
+        random_id = generate_random_id(temp_selected_ids, allow_repeat, min_id, max_id)
         label.config(text=str(random_id))
         job = root.after(5, update_number, allow_repeat, min_id, max_id)
 
 # 抽取学号按钮点击事件处理函数
 def draw_student_id():
-    global is_running, job, selected_ids
+    global is_running, job, selected_ids, temp_selected_ids
     allow_repeat, min_id, max_id = load_settings()
 
     if is_running:
@@ -142,6 +136,7 @@ def draw_student_id():
         id = label.cget("text")
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         selected_ids.append((str(id), timestamp))
+        temp_selected_ids.append((str(id), timestamp))
         save_selected_ids()
         if settings_window:
             update_history_list()
@@ -152,7 +147,6 @@ def draw_student_id():
         is_running = True
         button.config(text="停止")
         update_number(allow_repeat, min_id, max_id)
-
 
 # 设置按钮点击事件处理函数
 def open_settings():
@@ -197,7 +191,7 @@ def open_settings():
                 new_id = int(new_id)
                 if min_id <= new_id <= max_id:
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    selected_ids.append((str(new_id), timestamp))
+                    temp_selected_ids.append((str(new_id), timestamp))
                     update_history_list()
                 else:
                     messagebox.showerror("错误", f"学号必须在 {min_id} 和 {max_id} 之间")
@@ -208,11 +202,11 @@ def open_settings():
         selected = history_list.curselection()
         if selected:
             index = selected[0]
-            selected_ids.pop(index)
+            temp_selected_ids.pop(index)
             update_history_list()
-            if index < len(selected_ids):
+            if index < len(temp_selected_ids):
                 history_list.select_set(index)
-            elif selected_ids:
+            elif temp_selected_ids:
                 history_list.select_set(index - 1)
         else:
             messagebox.showerror("错误", "请选择一个学号进行删除")
@@ -221,7 +215,7 @@ def open_settings():
         selected = history_list.curselection()
         if selected:
             index = selected[0]
-            current_id, _ = selected_ids[index]
+            current_id, _ = temp_selected_ids[index]
             new_id = simpledialog.askstring(
                 "修改学号", "请输入新的学号:", initialvalue=str(current_id)
             )
@@ -230,7 +224,7 @@ def open_settings():
                     new_id = int(new_id)
                     if min_id <= new_id <= max_id:
                         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        selected_ids[index] = (str(new_id), timestamp)
+                        temp_selected_ids[index] = (str(new_id), timestamp)
                         update_history_list()
                         history_list.select_set(index)
                     else:
@@ -241,8 +235,8 @@ def open_settings():
             messagebox.showerror("错误", "请选择一个学号进行修改")
 
     def clear_all_ids():
-        global selected_ids
-        selected_ids = []
+        global temp_selected_ids
+        temp_selected_ids = []
         update_history_list()
 
     tk.Button(settings_window, text="新增记录", font=("宋体", 10), command=add_id).grid(
@@ -278,6 +272,8 @@ def open_settings():
     def save_changes():
         entered_password = simpledialog.askstring("密码", "请输入密码:", parent=settings_window, show="*")
         if entered_password == PASSWORD:
+            global selected_ids
+            selected_ids = list(temp_selected_ids)
             save_settings(
                 allow_repeat_var.get(), int(min_id_var.get()), int(max_id_var.get())
             )
@@ -301,7 +297,6 @@ def open_settings():
     settings_window.resizable(False, False)  # 让设置窗口不可缩放
 
     settings_window.protocol("WM_DELETE_WINDOW", close_settings_window)
-
 
 def close_settings_window():
     global settings_window
